@@ -58,11 +58,53 @@ with tab2:
         color = alt.Color('top genre',
                         scale=alt.Scale(scheme='dark2'),
                         legend=None), 
-        tooltip = ['title','artist','top genre'],   #this should work, but it is not for me
+        tooltip = [
+            alt.tooltop('title'),
+            alt.tooltip('artist'),
+            alt.tooltip('top genre')],   #this should work, but it is not for me
         ).properties(
             title = 'Top Songs From 2010-2019 Interactive'
             ).interactive()
     st.write(interactive_chart)
+
+    st.divider()
+
+    # --- Correlation Heatmap ---
+    st.subheader("Feature Correlation Heatmap")
+    st.write("See how all audio features relate to each other at a glance.")
+
+    # Compute correlation matrix on numeric columns
+    numeric_cols = df.select_dtypes(include='number').drop(columns=['year'])
+    corr = numeric_cols.corr().round(2)
+
+    # Convert to long format for Altair
+    corr_long = corr.reset_index().melt(id_vars='index')
+    corr_long.columns = ['Feature 1', 'Feature 2', 'Correlation']
+
+    heatmap = alt.Chart(corr_long).mark_rect().encode(
+        x=alt.X('Feature 1:N', axis=alt.Axis(labelAngle=-45)),
+        y=alt.Y('Feature 2:N'),
+        color=alt.Color('Correlation:Q',
+                        scale=alt.Scale(scheme='redblue', domain=[-1, 1]),
+                        legend=alt.Legend(title="Correlation")),
+        tooltip=['Feature 1', 'Feature 2', 'Correlation']
+    ).properties(
+        width=500,
+        height=400,
+        title='Audio Feature Correlations'
+    )
+
+    # Add text labels on each cell
+    text = heatmap.mark_text(fontSize=11).encode(
+        text=alt.Text('Correlation:Q', format='.2f'),
+        color=alt.condition(
+            'datum.Correlation > 0.5 || datum.Correlation < -0.5',
+            alt.value('white'),
+            alt.value('black')
+        )
+    )
+
+    st.altair_chart(heatmap + text, use_container_width=True)
 
 with tab3:    
         #graphs for linear regression
