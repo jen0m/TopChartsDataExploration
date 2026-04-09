@@ -76,20 +76,21 @@ with tab2:
 
     # Convert to long format for Altair
     corr_long = corr.reset_index().melt(id_vars='index')
-    corr_long.columns = ['Feature 1', 'Feature 2', 'Correlation']
+    corr_long.columns = ['Characteristic 1', 'Characteristic 2', 'Correlation']
 
     heatmap = alt.Chart(corr_long).mark_rect().encode(
-        x=alt.X('Feature 1:N', axis=alt.Axis(labelAngle=-45)),
-        y=alt.Y('Feature 2:N'),
+        x=alt.X('Characteristic 1:N', axis=alt.Axis(labelAngle=-45)),
+        y=alt.Y('Characteristic 2:N'),
         color=alt.Color('Correlation:Q',
                         scale=alt.Scale(scheme='redblue', domain=[-1, 1]),
                         legend=alt.Legend(title="Correlation")),
-        tooltip=['Feature 1', 'Feature 2', 'Correlation']
+        tooltip=['Characteristic 1', 'Characteristic 2', 'Correlation']
     ).properties(
         width=500,
         height=400,
-        title='Audio Feature Correlations'
+        title='Audio Characteristic Correlations'
     )
+    # Want to fix the unnamed column:0
 
     # Add text labels on each cell
     text = heatmap.mark_text(fontSize=11).encode(
