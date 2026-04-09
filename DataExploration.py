@@ -58,10 +58,7 @@ with tab2:
         color = alt.Color('top genre',
                         scale=alt.Scale(scheme='dark2'),
                         legend=None), 
-        tooltip = [
-            alt.Tooltip('title'),
-            alt.Tooltip('artist'),
-            alt.Tooltip('top genre')],   #this should work, but it is not for me
+        tooltip = ['title','artist','top genre'],   #this should work, but it is not for me
         ).properties(
             title = 'Top Songs From 2010-2019 Interactive'
             ).interactive()
