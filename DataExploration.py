@@ -133,7 +133,7 @@ with tab3:
     st.write(linear_regression_chart+chart1)
 
 with tab4:
-    st.subheader(About/Methods)
+    st.subheader('About/Methods')
 
 
 #added sidebar element for references
