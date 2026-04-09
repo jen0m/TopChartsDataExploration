@@ -59,9 +59,9 @@ with tab2:
                         scale=alt.Scale(scheme='dark2'),
                         legend=None), 
         tooltip = [
-            alt.tooltip('title'),
-            alt.tooltip('artist'),
-            alt.tooltip('top genre')],   #this should work, but it is not for me
+            alt.Tooltip('title'),
+            alt.Tooltip('artist'),
+            alt.Tooltip('top genre')],   #this should work, but it is not for me
         ).properties(
             title = 'Top Songs From 2010-2019 Interactive'
             ).interactive()
