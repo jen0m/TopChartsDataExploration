@@ -41,94 +41,99 @@ with tab1:
     st.table(artist_array.assign(hack='').set_index('hack'))
         #https://github.com/streamlit/streamlit/issues/641
 
-st.header('Now We Graph Our Data')
+with tab2:
+    st.header('Now We Graph Our Data')
 
-st.write('Go ahead and play with the values, try graphing bpm by nrgy or dnce by val')
+    st.write('Go ahead and play with the values, try graphing bpm by nrgy or dnce by val')
 
-df_numeric = pd.DataFrame(df.iloc[:,-12:-1])
-y_axis = st.selectbox('choose Y axis',list(df_numeric.columns))
-x_axis = st.selectbox('choose X axis',list(df_numeric.columns))
+    df_numeric = pd.DataFrame(df.iloc[:,-12:-1])
+    y_axis = st.selectbox('choose Y axis',list(df_numeric.columns))
+    x_axis = st.selectbox('choose X axis',list(df_numeric.columns))
 
-st.write('scroll to look around the graph')
+    st.write('scroll to look around the graph')
 
-interactive_chart = alt.Chart(df).mark_circle().encode(
-    x = alt.X(x_axis,scale=alt.Scale(zero=False)),
-    y = alt.Y(y_axis,scale=alt.Scale(zero=False)),
-    color = alt.Color('top genre',
-                      scale=alt.Scale(scheme='dark2'),
-                      legend=None), 
-    tooltip = ['title','artist','top genre'],   #this should work, but it is not for me
-    ).properties(
-        title = 'Top Songs From 2010-2019 Interactive'
-        ).interactive()
-st.write(interactive_chart)
+    interactive_chart = alt.Chart(df).mark_circle().encode(
+        x = alt.X(x_axis,scale=alt.Scale(zero=False)),
+        y = alt.Y(y_axis,scale=alt.Scale(zero=False)),
+        color = alt.Color('top genre',
+                        scale=alt.Scale(scheme='dark2'),
+                        legend=None), 
+        tooltip = ['title','artist','top genre'],   #this should work, but it is not for me
+        ).properties(
+            title = 'Top Songs From 2010-2019 Interactive'
+            ).interactive()
+    st.write(interactive_chart)
 
-    #graphs for linear regression
-chart1 = alt.Chart(df).mark_circle().encode(
-    x = alt.X('year_datetime',scale=alt.Scale(zero=False),
-              axis=alt.Axis(title='Year')),
-    y = alt.Y('pop',axis=alt.Axis(title='Pop')),
-    color = alt.Color('year_datetime',scale=alt.Scale(scheme="sinebow"),
-                      legend=alt.Legend(title="Year")), 
-    tooltip = ['title','artist'],   #same as above, I don't know why it isnt working :(
-    ).properties(
-        title = 'Poppiness of Top Songs From 2010-2019'
-        ).interactive()
-
-
-st.write(chart1)
-
-st.write("I don't know about you, but I see a positive correlation between"
-         " the year and the popiness of the song! It looks like songs get "
-         "poppier as the years go on, so I will use"
-         " linear regression to plot a line showing this positive correlation")
+with tab3:    
+        #graphs for linear regression
+    chart1 = alt.Chart(df).mark_circle().encode(
+        x = alt.X('year_datetime',scale=alt.Scale(zero=False),
+                axis=alt.Axis(title='Year')),
+        y = alt.Y('pop',axis=alt.Axis(title='Pop')),
+        color = alt.Color('year_datetime',scale=alt.Scale(scheme="sinebow"),
+                        legend=alt.Legend(title="Year")), 
+        tooltip = ['title','artist'],   #same as above, I don't know why it isnt working :(
+        ).properties(
+            title = 'Poppiness of Top Songs From 2010-2019'
+            ).interactive()
 
 
-    #linear regression
-st.write("We start by fitting the linear regression. I want to see the "
-         "y-intercept and the slope!")
+    st.write(chart1)
 
-reg = linear_model.LinearRegression()
-X = np.array(df['year']).reshape(-1,1)
-y = np.array(df['pop']).reshape(-1,1)
-reg.fit(X,y)
-reg_coef = float(reg.coef_[0][0])
-reg_int = float(reg.intercept_[0])
-#reg_coef = float(reg.coef_)
-#reg_int = float(reg.intercept_)
-    #https://christopherdavisuci.github.io/UCI-Math-10/Week5/Week5-Wednesday.html
-    
+    st.write("I don't know about you, but I see a positive correlation between"
+            " the year and the popiness of the song! It looks like songs get "
+            "poppier as the years go on, so I will use"
+            " linear regression to plot a line showing this positive correlation")
 
-st.write(f'Our slope turns out to be {reg_coef} and our y intercept is {reg_int}.'
-         ' The y-intercept is so negative because our data starts at 2010')  ##I tried to change this by making the values a year, but I dont think that would change it anyways!
 
-x_len = np.arange(2010,2020)
-source = pd.DataFrame({
-  'x': x_len,
-  'f(x)': (reg_coef*x_len)+reg_int
-})
+        #linear regression
+    st.write("We start by fitting the linear regression. I want to see the "
+            "y-intercept and the slope!")
 
-st.write('**Interactive Element:**')
-color = st.color_picker('Pick A Color for the Line',
-                        '#00f900')
+    reg = linear_model.LinearRegression()
+    X = np.array(df['year']).reshape(-1,1)
+    y = np.array(df['pop']).reshape(-1,1)
+    reg.fit(X,y)
+    reg_coef = float(reg.coef_[0][0])
+    reg_int = float(reg.intercept_[0])
+    #reg_coef = float(reg.coef_)
+    #reg_int = float(reg.intercept_)
+        #https://christopherdavisuci.github.io/UCI-Math-10/Week5/Week5-Wednesday.html
+        
 
-linear_regression_chart = alt.Chart(source).mark_line().encode(
-    x=alt.X('x',scale=alt.Scale(
-        domain=(2010,2019),
-        clamp=True)),
-    y=alt.Y('f(x)',scale=alt.Scale(
-        domain=(0,100),
-        clamp=True)),
-    color=alt.value(color),
-).interactive()     #added interactive() becasue it looks cool but it doesnt add anything to the project, and makes the graph a little funky!
-    #https://altair-viz.github.io/gallery/scatter_tooltips.html
-    #https://altair-viz.github.io/gallery/simple_line_chart.html
-st.write(linear_regression_chart)
+    st.write(f'Our slope turns out to be {reg_coef} and our y intercept is {reg_int}.'
+            ' The y-intercept is so negative because our data starts at 2010')  ##I tried to change this by making the values a year, but I dont think that would change it anyways!
 
-st.write('we can see a positive linear regression regarding the songs'
-         ' poppiness throughout the years in the following altair chart!')
+    x_len = np.arange(2010,2020)
+    source = pd.DataFrame({
+    'x': x_len,
+    'f(x)': (reg_coef*x_len)+reg_int
+    })
 
-st.write(linear_regression_chart+chart1)
+    st.write('**Interactive Element:**')
+    color = st.color_picker('Pick A Color for the Line',
+                            '#00f900')
+
+    linear_regression_chart = alt.Chart(source).mark_line().encode(
+        x=alt.X('x',scale=alt.Scale(
+            domain=(2010,2019),
+            clamp=True)),
+        y=alt.Y('f(x)',scale=alt.Scale(
+            domain=(0,100),
+            clamp=True)),
+        color=alt.value(color),
+    ).interactive()     #added interactive() becasue it looks cool but it doesnt add anything to the project, and makes the graph a little funky!
+        #https://altair-viz.github.io/gallery/scatter_tooltips.html
+        #https://altair-viz.github.io/gallery/simple_line_chart.html
+    st.write(linear_regression_chart)
+
+    st.write('we can see a positive linear regression regarding the songs'
+            ' poppiness throughout the years in the following altair chart!')
+
+    st.write(linear_regression_chart+chart1)
+
+with tab4:
+    st.subheader(About/Methods)
 
 
 #added sidebar element for references
