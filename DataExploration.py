@@ -59,7 +59,7 @@ with tab2:
                         scale=alt.Scale(scheme='dark2'),
                         legend=None), 
         tooltip = [
-            alt.tooltop('title'),
+            alt.tooltip('title'),
             alt.tooltip('artist'),
             alt.tooltip('top genre')],   #this should work, but it is not for me
         ).properties(
