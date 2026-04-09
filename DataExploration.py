@@ -12,38 +12,34 @@ st.title('Exploring Top Charts 2010-2019')
 
 st.header('Exploring Data')
 
-st.subheader('Choose an artist to see their top songs')
+tab1, tab2, tab3, tab4 = st.tabs(["Artist Explorer","Feature Explorer","Trends","About"])
 
-df = pd.read_csv('top10s.csv',encoding='latin1')  #added encoding argument because certain characters were not being recognized
-df['year_datetime'] = pd.to_datetime(df['year'], format='%Y')
-    #https://stackoverflow.com/questions/46658232/pandas-convert-column-with-year-integer-to-datetime
-
-    #creaeting a tuple of artists to use in my selectbox
-listartists = [x for x in df['artist']]
-setartists = set(listartists)
-tupleartists = tuple(setartists)
-
-    #defining a function that counts how many times the artist's name appears
-    #I want to be able to display which songs each artist has as well
-def count(artist):
-    return sum(df['artist']==artist)
-
-
-artist_selection = st.selectbox(
-    'Choose an Artist:',
-             tupleartists)
-    
-artistname = np.column_stack([df['artist'].str.contains(f'{artist_selection}', na=False)]) 
-df_artistname = df.loc[artistname.any(axis=1)]
-artist_array = df_artistname[['title','year']]      
-    #https://stackoverflow.com/questions/58351458/how-to-extract-entire-rows-from-pandas-data-frame-if-a-columns-string-value-co
-
-st.write(
-    f'{artist_selection} has {count(artist_selection)} songs in top charts'
-    )
-st.write('Here are their top songs:')
-st.table(artist_array.assign(hack='').set_index('hack'))
-    #https://github.com/streamlit/streamlit/issues/641
+with tab1:
+    st.subheader('Choose an artist to see their top songs')
+    df = pd.read_csv('top10s.csv',encoding='latin1')  #added encoding argument because certain characters were not being recognized
+    df['year_datetime'] = pd.to_datetime(df['year'], format='%Y')
+        #https://stackoverflow.com/questions/46658232/pandas-convert-column-with-year-integer-to-datetime
+        #creaeting a tuple of artists to use in my selectbox
+    listartists = [x for x in df['artist']]
+    setartists = set(listartists)
+    tupleartists = tuple(setartists)
+        #defining a function that counts how many times the artist's name appears
+        #I want to be able to display which songs each artist has as well
+    def count(artist):
+        return sum(df['artist']==artist)
+    artist_selection = st.selectbox(
+        'Choose an Artist:',
+                tupleartists)    
+    artistname = np.column_stack([df['artist'].str.contains(f'{artist_selection}', na=False)]) 
+    df_artistname = df.loc[artistname.any(axis=1)]
+    artist_array = df_artistname[['title','year']]      
+        #https://stackoverflow.com/questions/58351458/how-to-extract-entire-rows-from-pandas-data-frame-if-a-columns-string-value-co
+    st.write(
+        f'{artist_selection} has {count(artist_selection)} songs in top charts'
+        )
+    st.write('Here are their top songs:')
+    st.table(artist_array.assign(hack='').set_index('hack'))
+        #https://github.com/streamlit/streamlit/issues/641
 
 st.header('Now We Graph Our Data')
 
