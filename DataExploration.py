@@ -67,8 +67,8 @@ with tab2:
     st.divider()
 
     # --- Correlation Heatmap ---
-    st.subheader("Feature Correlation Heatmap")
-    st.write("See how all audio features relate to each other at a glance.")
+    st.subheader("Song Characteristic Correlation Heatmap")
+    st.write("See how all audio characteristics relate to each other at a glance. Use this as a hint to graph your own characteristics above!")
 
     # Compute correlation matrix on numeric columns
     numeric_cols = df.select_dtypes(include='number').drop(columns=['year'])
