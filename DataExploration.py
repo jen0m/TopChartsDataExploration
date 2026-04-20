@@ -174,6 +174,9 @@ with tab3:
 
 with tab4:
     st.subheader('About/Methods')
+    st.write('Exploratory analysis of a dataset provided to me in a data science class from college.'
+            ' My main question was to find a correlation between two of the song characteristics and create'
+            'a linear regression using scikit-learn')
 
 
 #added sidebar element for references
